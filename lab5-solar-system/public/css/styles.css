@@ -1,7 +1,25 @@
+h1 {
+    text-shadow:
+        -1px -1px 0 #000,
+        1px -1px 0 #000, 
+        -1px  1px 0 #000, 
+        1px  1px 0 #000;
+}
+
+
 body {
     text-align: center;
 }
 
 footer {
     text-align: center;
+    font-size: large;
+}
+
+.container-fluid m5 row {
+    justify-content: center;
+}
+
+.card p-4 row {
+    justify-content: center;
 }
