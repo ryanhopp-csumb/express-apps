@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-include("partials/head.ejs")%>
+    <title>Lab 6: Quotes</title>
+</head>
+<body>
+    <h1 class="text-center">Famous Quotes</h1>
+
+    <nav class="text-center"></nav>
+
+    <div class="text-center container">
+        <%for (let i of rows) {%>
+            <i class="fs-5"></i> "<%=i.quote%>" <br>
+            - <%=i.firstName%> <%=i.lastName%>
+            <%=i.category%>
+            <br><br>
+        <%}%>
+    </div>
+    <br><br>
+
+    <%-include("partials/footer.ejs")%>
+</body>
+</html>

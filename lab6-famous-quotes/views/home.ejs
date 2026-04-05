@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-include("partials/head.ejs")%>
+    <title>Lab 6: Quote Finder</title>
+</head>
+<body>
+
+    <h1 class="text-center">Quote Finder</h1>
+    <br>
+    
+    <form class="text-center" action="/searchByKeyword" method="GET">
+        Keyword: <input type="text" name="keyword">
+        <button class="p-3 mb-2 bg-info text-dark">Search by Keyword</button>
+    </form> <br><br>
+
+    <form class="text-center" action="/searchByAuthor" method="GET">
+        Author:
+        <select name="authorId">
+            <option value="0">--Select an option--</option>
+            <% for (let i of authors) {%>
+                <option value="<%=i.authorId%>">
+                    <%=i.firstName%> <%=i.lastName%>
+                </option>
+            <%}%>
+        </select>
+        <button class="p-3 mb-2 bg-info text-dark">Search by Author</button>
+    </form>
+    <br><br>
+
+    <form class="text-center" action="searchByCategory" method="GET">
+        Category:
+        <select name="category">
+            <option value="none">--Select an option--</option>
+            <% for (let i of categories) {%>
+                <option value="<%=i.category%>">
+                    <%=i.category%>
+                </option>
+            <%}%>
+        </select>
+        <button class="p-3 mb-2 bg-info text-dark">Search by Category</button>
+    </form>
+    <br><br>
+    <%-include("partials/footer.ejs")%>
+</body>
+</html>
