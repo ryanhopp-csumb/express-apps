@@ -1,14 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <%-include("partials/head.ejs")%>
 </head>
+
 <body>
-    <h1 class="top">Homework 3: Recipe Finder</h1>
+    <h1 class="text-center">Homework 3: Recipe Finder</h1>
 
     <%-include("partials/nav.ejs")%>
 
+    <br>
+    <form class="p-1 text-center" action="/searchByCategory" method="GET">
+        <h4>Search for a meal by category:</h4>
+        <select name="category">
+            <option value="N/A">--Select an option--</option>
+            <% for (let i of categories) {%>
+                <option value="<%=i.strCategory%>">
+                    <%=i.strCategory%>
+                </option>
+            <%}%>
+        </select>
+        <button class="text-dark">Search by Category</button>
+        </form>
+        <br><br>
 
     <%-include("partials/footer.ejs")%>
 </body>
+
 </html>

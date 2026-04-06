@@ -1,0 +1,23 @@
+
+/* currently not in use */
+.top {
+    font-family: Verdana;
+    background-color: rgb(164, 190, 255);
+}
+
+h1 {
+    text-align: center;
+}
+
+h3 {
+    font-family: Verdana;
+}
+
+nav {
+    font-family: Verdana;
+    background-color: rgb(178, 255, 178);
+}
+
+footer {
+    text-align: center;
+}
