@@ -2,17 +2,22 @@
 <html lang="en">
 <head>
     <%-include("partials/head.ejs")%>
-    <title>Lab 6: Quote Finder</title>
 </head>
 <body>
 
     <h1 class="text-center">Quote Finder</h1>
     <br>
     
-    <form class="text-center" action="/searchByKeyword" method="GET">
+    <form class="text-center" id="keywordForm" action="/searchByKeyword" method="GET">
         Keyword: <input type="text" name="keyword">
+        &nbsp
         <button class="p-3 mb-2 bg-info text-dark">Search by Keyword</button>
-    </form> <br><br>
+    </form> 
+
+    <div class="text-center" id="errorMsg">
+    </div>
+    
+    <br><br>
 
     <form class="text-center" action="/searchByAuthor" method="GET">
         Author:
@@ -24,6 +29,7 @@
                 </option>
             <%}%>
         </select>
+        &nbsp
         <button class="p-3 mb-2 bg-info text-dark">Search by Author</button>
     </form>
     <br><br>
@@ -31,16 +37,32 @@
     <form class="text-center" action="searchByCategory" method="GET">
         Category:
         <select name="category">
-            <option value="none">--Select an option--</option>
+            <option value="N/A">--Select an option--</option>
             <% for (let i of categories) {%>
                 <option value="<%=i.category%>">
+                    <%if(i.category === "") {%>
+                        <%i.category = "None";%>
+                    <%}%>
                     <%=i.category%>
                 </option>
             <%}%>
         </select>
+        &nbsp
         <button class="p-3 mb-2 bg-info text-dark">Search by Category</button>
     </form>
     <br><br>
+
+    <form class="text-center" action="searchByLikes" method="GET">
+        Likes between:
+        <input type="number" name="likes1" class="likesRange" id="likesMin" min="0" max="300"> &nbsp
+        and &nbsp
+        <input type="number" name="likes2" class="likesRange" id="likesMax" min="0" max="300"> &nbsp
+        <button class="p-3 mb-2 bg-info text-dark">Search by Likes</button>
+    </form>
+    <br><br>
+
+    <script src="js/keyword.js"></script>
+
     <%-include("partials/footer.ejs")%>
 </body>
 </html>

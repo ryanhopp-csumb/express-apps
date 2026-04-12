@@ -1,0 +1,32 @@
+h1 {
+    background-color: rgb(30, 183, 213);
+    padding-top: 1ch;
+    padding-bottom: 1ch;
+}
+
+a {
+    color: rgb(36, 124, 148);
+}
+
+#quoteDiv {
+    padding-top: 3ch;
+    padding-bottom: 3ch;
+    border-radius: 2ch;
+    background-color: rgb(250, 182, 255);
+}
+
+.likesRange {
+    text-align: center;
+    width: 8ch;
+}
+
+#errorMsg {
+    font-size: larger;
+}
+
+form {
+    padding-top: 3ch;
+    padding-bottom: 3ch;
+    border-radius: 2ch;
+    background-color: rgb(250, 182, 255);
+}

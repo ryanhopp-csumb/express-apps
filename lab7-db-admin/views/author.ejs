@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-include("partials/head.ejs")%>
+</head>
+<body>
+    <h1>Adding a new author</h1>
+
+    <form action="/addAuthor" method="POST">
+        First name: <input type="text" name="firstName"> <br><br>
+        Last name: <input type="text" name="lastName"> <br><br>
+        Date of birth: <input type="date" name="dob"> <br><br>
+        Date of death: <input type="date" name="dod"> <br><br>
+        Sex: 
+        <label>
+            <input type="radio" name="sex" value="M">Male
+        </label>
+        <label>
+            <input type="radio" name="sex" value="F">Female
+        </label><br><br>
+        Image url: <textarea name="imgurl"></textarea> <br><br>
+        Biography: <textarea name="bio"></textarea> <br><br>
+        <button>Add author</button>
+    </form>
+    <%-include("partials/footer.ejs")%>
+</body>
+</html>

@@ -2,23 +2,53 @@
 <html lang="en">
 <head>
     <%-include("partials/head.ejs")%>
-    <title>Lab 6: Quotes</title>
 </head>
 <body>
     <h1 class="text-center">Famous Quotes</h1>
 
-    <nav class="text-center"></nav>
+    <nav class="text-center"><a href="/">Home</a></nav>
+    <br>
 
-    <div class="text-center container">
+    <div class="text-center container" id="quoteDiv">
         <%for (let i of rows) {%>
+            <%if (i.category === "") {%>
+                <%i.category = "None"%>
+            <%}%>
+
+            <%if (i.likes === null) {%>
+                <%i.likes = 0%>
+            <%}%>
+
             <i class="fs-5"></i> "<%=i.quote%>" <br>
-            - <%=i.firstName%> <%=i.lastName%>
-            <%=i.category%>
+            - <a href="#" class="authorNames" authorId="<%=i.authorId%>"> <%=i.firstName%> <%=i.lastName%></a>, 
+            <%=i.category%>, <%=i.likes%> likes
             <br><br>
         <%}%>
     </div>
+
+    <dialog id="authorDialog">
+        <button id="x">X</button><br><br>
+        <div id="authorInfo" class="text-center">
+            <h1 id="authorName"></h1>
+            <img id="authorImage" width="300"><br>
+            Date of birth:
+            <span id="dob"></span><br>
+            Date of death:
+            <span id="dod"></span><br><br>
+            Sex:
+            <span id="sex"></span><br>
+            Profession:
+            <span id="profession"></span><br>
+            Country:
+            <span id="country"></span><br><br>
+            <p id="authorBio"></p>
+        </div>
+    </dialog>
+
     <br><br>
 
     <%-include("partials/footer.ejs")%>
+
+    <script src="js/quotes.js"></script>
 </body>
 </html>

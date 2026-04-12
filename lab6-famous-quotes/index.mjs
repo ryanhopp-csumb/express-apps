@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import express from 'express';
 import mysql from 'mysql2/promise';
 const app = express();
@@ -10,8 +11,8 @@ app.use(express.urlencoded({extended:true}));
 
 const pool = mysql.createPool({
     host: "sh4ob67ph9l80v61.cbetxkdyhwsb.us-east-1.rds.amazonaws.com",
-    user: "w9c7lwn8um1o99yj",
-    password: "u3rw8lbcasz2h307",
+    user: process.env.DB_USERNAME,
+    password: process.env.DB_PWD,
     database: "pyn5h5u7iu857dd2",
     connectionLimit: 10,
     waitForConnections: true
@@ -19,22 +20,22 @@ const pool = mysql.createPool({
 
 //routes
 app.get('/', async(req, res) => {
-    let sql = `SELECT authorId, firstName, lastName, likes
+    let sql = `SELECT firstName, lastName, authorId
                 FROM authors
                 ORDER BY lastName`;
     const [authors] = await pool.query(sql);
-    let sql1 = `SELECT DISTINCT category
+    let sql1 = `SELECT category, firstName, lastName, authorId
                 FROM quotes
-                ORDER BY quote`;
+                NATURAL JOIN authors
+                GROUP BY category`;
     const [categories] = await pool.query(sql1);  
    res.render('home.ejs', {authors, categories});
 });
 
 app.get("/searchByKeyword", async(req, res) => {
-   try {
-        //console.log(req);
+    try {
         let keyword = req.query.keyword;
-        let sql = `SELECT quote, firstName, lastName
+        let sql = `SELECT quote, likes, category, firstName, lastName, authorId
                     FROM quotes
                     NATURAL JOIN authors
                     WHERE quote LIKE ?`;
@@ -50,7 +51,7 @@ app.get("/searchByKeyword", async(req, res) => {
 app.get("/searchByAuthor", async(req, res) => {
    try {
        let authorId = req.query.authorId;
-        let sql = `SELECT quote, firstName, lastName
+        let sql = `SELECT quote, likes, category, firstName, lastName, authorId
                     FROM quotes
                     NATURAL JOIN authors
                     WHERE authorId = ${authorId}`;
@@ -65,9 +66,10 @@ app.get("/searchByAuthor", async(req, res) => {
 app.get("/searchByCategory", async(req, res) => {
    try {
         let category = req.query.category;
-        let sql = `SELECT category, quote
+        let sql = `SELECT quote, likes, category, firstName, lastName, authorId
                     FROM quotes
-                    WHERE category = '${category}'`;
+                    NATURAL JOIN authors
+                    WHERE quotes.authorId = authors.authorId AND quotes.category = '${category}'`;
         const [rows] = await pool.query(sql);
         res.render("quotes.ejs", {rows});
     } catch (err) {
@@ -78,13 +80,15 @@ app.get("/searchByCategory", async(req, res) => {
 
 app.get("/searchByLikes", async(req, res) => {
    try {
-        let keyword = req.query.keyword;
-        let sql = `SELECT quote, firstName, lastName
+        let likes1 = req.query.likes1;
+        let likes2 = req.query.likes2;
+        let sql = `SELECT quote, likes, category, firstName, lastName, authorId
                     FROM quotes
                     NATURAL JOIN authors
-                    WHERE quote LIKE ?`;
-        let sqlParams = [`%${keyword}%`];
-        const [rows] = await pool.query(sql, sqlParams);
+                    WHERE quotes.authorId = authors.authorId
+                    AND likes BETWEEN ${likes1} AND ${likes2}
+                    ORDER BY likes`;
+        const [rows] = await pool.query(sql);
         res.render("quotes.ejs", {rows});
     } catch (err) {
         console.error("Database error:", err);
@@ -92,6 +96,15 @@ app.get("/searchByLikes", async(req, res) => {
     }
 });
 
+//API to get author info based on author id
+app.get('/api/author/:authorID', async(req, res) => {
+    let authorId = req.params.authorID;
+    let sql = `SELECT *
+                FROM authors
+                WHERE authorId = ?`;
+    const [authorInfo] = await pool.query(sql, [authorId]);
+    res.send(authorInfo); //displays info in JSON format
+});
 
 app.get("/dbTest", async(req, res) => {
    try {
