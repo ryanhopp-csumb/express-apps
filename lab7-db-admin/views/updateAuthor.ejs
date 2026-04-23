@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <%-include("partials/head.ejs")%>
+</head>
+<body>
+    <h1>Updating an author</h1>
+
+    <form action="/updateAuthor" method="POST">
+        <input type="hidden" name="authorId" value="<%=authorInfo[0].authorId%>"> <br><br>
+        First name: <input type="text" name="firstName" value="<%=authorInfo[0].firstName%>"> <br><br>
+        Last name: <input type="text" name="lastName" value="<%=authorInfo[0].lastName%>"> <br><br>
+        Date of birth: <input type="date" name="dob" value="<%=authorInfo[0].ISOdob%>"> <br><br>
+        Date of death: <input type="date" name="dod" value="<%=authorInfo[0].ISOdod%>"> <br><br>
+        Sex: 
+        <label>
+            <input type="radio" <%=(authorInfo[0].sex == 'M')?"checked":""%>
+            name="sex" value="M">Male
+        </label>
+        <label>
+            <input type="radio" <%=(authorInfo[0].sex == 'F')?"checked":""%>
+            name="sex" value="F">Female
+        </label> <br><br>
+        Image url: <textarea name="imgurl"><%=authorInfo[0].portrait%></textarea> <br><br>
+        Biography: <textarea name="bio"><%=authorInfo[0].biography%></textarea> <br><br>
+        <button>Update author</button>
+    </form>
+    <br>
+    <%-include("partials/footer.ejs")%>
+</body>
+</html>

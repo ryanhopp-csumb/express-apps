@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <%-include("partials/head.ejs")%>
+</head>
+
+<body>
+    <h1>Update a Quote</h1>
+
+    <form action="/updateQuote" method="POST">
+        Quote: <textarea name="quote"><%=quoteInfo[0].quote%></textarea> <br><br>
+
+        Category:
+        <select name="category">
+            <option>--Select an option--</option>
+
+            <%for (let i of categoryList) {%>
+                <option <%=(quoteInfo[0].category==i.category)?"selected":""%> value="<%=i.category%>">
+                    <%=i.category%></option>
+            <%}%>
+        </select> <br><br>
+
+        Author:
+        <select name="author">
+            <option value="0">--Select an option--</option>
+            <%for (let i of authorList) {%>
+                <option <%=(quoteInfo[0].authorId==i.authorId)?"selected":""%> value="<%=i.authorId%>">
+                    <%=i.firstName%> <%=i.lastName%></option>
+            <%}%>
+        </select> <br><br>
+
+        Likes:
+        <input type="number" name="likes" min="0" max="1000"><br><br>
+
+        <button>Update quote</button>
+    </form>
+    <%-include("partials/footer.ejs")%>
+</body>
+
+</html>

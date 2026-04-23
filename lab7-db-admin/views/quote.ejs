@@ -11,30 +11,25 @@
         Category:
         <select name="category">
             <option>--Select an option--</option>
-            <option>Motivational</option>
-            <option>Inspirational</option>
-            <option>Life</option>
-            <option>Moral</option>
-            <option>Wisdom</option>
-            <option>Freedom</option>
+            <%for (let i of authorOptions) {%>
+                <option><%=i.category%></option>
+            <%}%>
         </select> <br><br>
 
         Author:
         <select name="author">
             <option value="0">--Select an option--</option>
-            <option value="1">Albert Einstein</option>
-            <option value="2">Agatha Christie</option>
-            <option value="3">Marie Curie</option>
-            <option value="4">Abraham Lincoln</option>
-            <option value="5">Mohandas Gandhi</option>
-            <option value="6">Helen Keller</option>
-            <option value="7">Benjamin Franklin</option>
-            <option value="8">Gideon Stewman</option>
-            <option value="17">Hugh Jass</option>
-            <option value="19">Bob McBobFace</option>
+            <%for (let i of authorOptions) {%>
+                <option value="<%=i.authorId%>"><%=i.firstName%> <%=i.lastName%></option>
+            <%}%>
         </select> <br><br>
+
+        Likes:
+        <input type="number" name="likes" min="0" max="1000"><br><br>
+
         <button>Add quote</button>
     </form>
+    <br>
     <%-include("partials/footer.ejs")%>
 </body>
 </html>
