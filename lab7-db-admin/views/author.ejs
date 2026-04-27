@@ -5,6 +5,9 @@
 </head>
 <body>
     <h1>Adding a new author</h1>
+    
+    <%-include("partials/nav.ejs")%>
+    <br>
 
     <form action="/addAuthor" method="POST">
         First name: <input type="text" name="firstName"> <br><br>

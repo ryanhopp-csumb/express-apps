@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import express from 'express';
 import mysql from 'mysql2/promise';
+import bcrypt from 'bcrypt'; //for secrets
+import session from 'express-session'; //for sessions
 const app = express();
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
@@ -17,16 +19,70 @@ const pool = mysql.createPool({
     waitForConnections: true
 });
 
-//routes
-app.get('/', (req, res) => {
-   res.render('home.ejs')
+//setting sessions
+app.set('trust proxy', 1) // trust first proxy
+app.use(session({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+//   cookie: { secure: true }
+}))
+
+//middleware used by ALL routes
+app.use((req, res, next) => {
+   res.locals.fullName = req.session.fullName || "";
+   next(); //next middleware/route
 });
 
-app.get('/addAuthor', (req, res) => {
+//routes
+app.get('/', (req, res) => {
+   res.render('home.ejs');
+});
+
+app.get('/login', (req, res) => {
+   res.render('login.ejs');
+});
+
+app.get('/logout', (req, res) => {
+    req.session.destroy();
+    res.redirect('/');
+});
+
+app.post('/loginLanding', async(req, res) => {
+    let {username, password} = req.body;
+
+    console.log(username + ": " + password);
+
+   let hashedPassword = "";
+
+   let sql = `SELECT *
+              FROM admin
+              WHERE username = ?`;
+   const [rows] = await pool.query(sql, [username]);
+
+    if (rows.length > 0) { //username was found in the database
+        hashedPassword = rows[0].password;
+    }
+    
+    const match = await bcrypt.compare(password, hashedPassword);
+
+    if (match) {
+        req.session.authenticated = true;
+        req.session.fullName = rows[0].firstName + " " + rows[0].lastName;
+        res.render('loginLanding.ejs');
+    } else {
+        let loginError = "Wrong Credentials! Try again!"
+        res.render('login.ejs', {loginError});
+    }
+});
+
+//Author section\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
+app.get('/addAuthor', isUserAuthenticated, (req, res) => { //create authors
    res.render('author.ejs');
 });
 
-app.post('/addAuthor', async(req, res) => {
+app.post('/addAuthor', isUserAuthenticated, async(req, res) => {
     let firstName = req.body.firstName;
     let lastName = req.body.lastName;
     let dob = req.body.dob;
@@ -43,7 +99,7 @@ app.post('/addAuthor', async(req, res) => {
     res.redirect('/');
 });
 
-app.get('/allAuthors', async(req, res) => {
+app.get('/allAuthors', async(req, res) => { //read authors
     let sql = `SELECT authorId, firstName, lastName
                 FROM authors
                 ORDER BY authorId`
@@ -51,7 +107,7 @@ app.get('/allAuthors', async(req, res) => {
    res.render('allAuthors.ejs', {authors});
 });
 
-app.get('/updateAuthor', async(req, res) => {
+app.get('/updateAuthor', isUserAuthenticated, async(req, res) => { //update authors
     let authorId = req.query.authorId;
     let sql = `SELECT *, DATE_FORMAT(dob, '%Y-%m-%d') ISOdob, DATE_FORMAT(dod, '%Y-%m-%d') ISOdod
                 FROM authors
@@ -60,7 +116,7 @@ app.get('/updateAuthor', async(req, res) => {
    res.render('updateAuthor.ejs', {authorInfo});
 });
 
-app.post('/updateAuthor', async(req, res) => {
+app.post('/updateAuthor', isUserAuthenticated, async(req, res) => {
     let authorId = req.body.authorId;
     let firstName = req.body.firstName;
     let lastName = req.body.lastName;
@@ -80,7 +136,7 @@ app.post('/updateAuthor', async(req, res) => {
    res.redirect('/allAuthors.ejs', {authorInfo});
 });
 
-app.get('/deleteAuthor', async(req, res) => {
+app.get('/deleteAuthor', isUserAuthenticated, async(req, res) => { //delete authors
     // let sql = `SELECT authorId, firstName, lastName
     //             FROM authors
     //             ORDER BY authorId`
@@ -88,9 +144,9 @@ app.get('/deleteAuthor', async(req, res) => {
    res.render('deleteAuthor.ejs');
 });
 
+//Quotes section\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
 
-
-app.get('/addQuote', async(req, res) => {
+app.get('/addQuote', isUserAuthenticated, async(req, res) => { //create quotes
     let sql = `SELECT authorId, firstName, lastName, category
                 FROM authors
                 NATURAL JOIN quotes
@@ -99,7 +155,7 @@ app.get('/addQuote', async(req, res) => {
    res.render('quote.ejs', {authorOptions});
 });
 
-app.post('/newQuote', async(req, res) => {
+app.post('/newQuote', isUserAuthenticated, async(req, res) => {
     let quote = req.body.quote;
     let category = req.body.category;
     let author = req.body.author;
@@ -115,7 +171,7 @@ app.post('/newQuote', async(req, res) => {
     res.redirect('/');
 });
 
-app.get('/allQuotes', async(req, res) => {
+app.get('/allQuotes', async(req, res) => { //read quotes
     let sql = `SELECT quote, quoteId
                 FROM quotes
                 ORDER BY quoteId`
@@ -123,7 +179,7 @@ app.get('/allQuotes', async(req, res) => {
    res.render('allQuotes.ejs', {allQuotes});
 });
 
-app.get('/updateQuote', async(req, res) => {
+app.get('/updateQuote', isUserAuthenticated, async(req, res) => { //update quotes
     let quoteId = req.query.quoteId;
     let sql = `SELECT *
                 FROM quotes
@@ -142,7 +198,7 @@ app.get('/updateQuote', async(req, res) => {
    res.render('updateQuote.ejs', {quoteInfo, authorList, categoryList});
 });
 
-app.post('/updateQuote', async(req, res) => {
+app.post('/updateQuote', isUserAuthenticated, async(req, res) => {
     let quoteId = req.query.quoteId;
     let sql = `SELECT *
                 FROM quotes
@@ -155,6 +211,23 @@ app.post('/updateQuote', async(req, res) => {
     const [authorList] = await pool.query(sql1);
    res.render('updateQuote.ejs', {quoteInfo, authorList});
 });
+
+app.get('/deleteQuote', isUserAuthenticated, async(req, res) => { //delete quotes
+    // let sql = `SELECT authorId, firstName, lastName
+    //             FROM authors
+    //             ORDER BY authorId`
+    // const [authors] = await pool.query(sql);
+   res.render('deleteQuote.ejs');
+});
+
+//checking if user is authenticated
+function isUserAuthenticated(req, res, next){
+    if (req.session.authenticated) { 
+      next();
+    } else {
+        res.redirect("/");
+    }
+}
 
 app.get("/dbTest", async(req, res) => {
    try {

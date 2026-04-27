@@ -5,9 +5,11 @@
 </head>
 <body>
     <h1>All Quotes</h1>
+    <%-include("partials/nav.ejs")%>
+    <br>
     <%for (let i of allQuotes) {%>
         <a href="/updateQuote?quoteId=<%=i.quoteId%>">Update quote</a> &nbsp
-        <a href="deleteQuote?quoteId=<%=i.quoteId%>">Delete quote</a>
+        <a href="/deleteQuote?quoteId=<%=i.quoteId%>">Delete quote</a>
         <%=i.quoteId%>. <%=i.quote%> <br><br>
     <%}%>
     <br>

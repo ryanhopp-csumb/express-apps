@@ -3,16 +3,33 @@ h1 {
     font-family: 'Georgia';
     padding-top: 1ch;
     padding-bottom: 1ch;
-    background-color: lightblue;
+    background-color: rgb(216, 17, 216);
 }
 
 footer {
     text-align: center;
-    padding-top: 2ch;
-    padding-bottom: 2ch;
-    background-color: lightblue;
+    padding-top: 4ch;
+    padding-bottom: 4ch;
+    background-color: rgb(19, 14, 184);
+    color:white;
 }
 
 form {
     text-align: center;
+}
+
+button {
+    padding: 10px;
+    background-color: rgb(218, 190, 240);
+}
+
+.navbar ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 2ch;
+    background-color: #a823cd;
+    overflow: hidden;
+    display:flex;
+    gap: 20px;
+    justify-content: center;
 }

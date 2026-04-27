@@ -1,11 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
 <body>
-    
+    <nav class="navbar">
+        <ul>
+            <li>
+                <form action="/">
+                    <button>Home</button>
+                </form>
+            </li>
+
+            <li>
+                <form action="/allAuthors" method="GET">
+                    <button>Display all authors</button>
+                </form>
+            </li> 
+
+            <li>
+                <form action="/allQuotes" method="GET">
+                    <button>Display all quotes</button>
+                </form>
+            </li>
+
+            <li>
+                <form action="/logout">
+                    <button>Log out</button>
+                </form>
+            </li>
+        </ul>
+    </nav>
 </body>
 </html>

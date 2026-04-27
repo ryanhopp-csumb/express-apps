@@ -6,6 +6,9 @@
 <body>
     <h1>Adding a new quote</h1>
 
+    <%-include("partials/nav.ejs")%>
+    <br>
+
     <form action="/newQuote" method="POST">
         Quote: <textarea name="quote"></textarea> <br><br>
         Category:
